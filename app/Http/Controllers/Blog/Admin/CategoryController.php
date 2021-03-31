@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Blog\Admin;
 
-use //App\Http\Controllers\Controller;
+//use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BlogCategory;
 use Illuminate\Support\Str;
@@ -102,7 +102,7 @@ class CategoryController extends BaseController
                 ->withInput();
         }
     }
-}
+
 
     /**
      * Remove the specified resource from storage.
