@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Blog\Admin;
 
+use App\Http\Requests\BlogPostCreateRequest;
+use App\Models\BlogPost;
 use App\Repositories\BlogPostRepository;
-use Illuminate\Http\Request;
 use App\Repositories\BlogCategoryRepository;
 use App\Http\Requests\BlogPostUpdateRequest;
+
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class PostController extends BaseController
 {
@@ -45,7 +48,11 @@ class PostController extends BaseController
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
+    {$item = new BlogPost();
+        $categoryList
+            = $this->blogCategoryRepository->getForComboBox();
+
+        return view('blog.admin.posts.edit', compact('item', 'categoryList'));
         //
     }
 
@@ -55,11 +62,23 @@ class PostController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BlogPostCreateRequest $request)
     {
-        //
-    }
+        $data = $request->input(); //отримаємо масив даних, які надійшли з форми
+        $item = (new BlogPost())->create($data); //створюємо об'єкт і додаємо в БД
 
+        if ($item) {
+            return redirect()
+                ->route('blog.admin.posts.edit', [$item->id])
+                ->with(['success' => 'Успішно збережено']);
+        } else {
+            return back()
+                ->withErrors(['msg' => 'Помилка збереження'])
+                ->withInput();
+
+            //
+        }
+    }
     /**
      * Display the specified resource.
      *
@@ -128,6 +147,15 @@ class PostController extends BaseController
      */
     public function destroy($id)
     {
-        //
+        $result = BlogPost::destroy($id);
+
+        if ($result) {
+            return redirect()
+                ->route('blog.admin.posts.index')
+                ->with(['success' => "Запис id[$id] видалено"]);
+        } else {
+            return back()
+                ->withErrors(['msg' => 'Помилка видалення']);
+        }
     }
 }
