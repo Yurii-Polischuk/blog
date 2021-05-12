@@ -15,6 +15,7 @@ class CreateBlogPostsTable extends Migration
     {
         Schema::create('blog_posts', function (Blueprint $table) {
             $table->id();
+
             $table->bigInteger('category_id')->unsigned(); //category
             $table->bigInteger('user_id')->unsigned();  //author
             $table->string('slug')->unique(); //uri
